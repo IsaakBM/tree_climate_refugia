@@ -13,6 +13,7 @@ These analyses support the conceptual and empirical framework developed in the m
 
 # 📂 Repository Structure
 
+```
 tree_climate_refugia/
 ├── data-raw/                   # Raw raster inputs (VoCC and RCE)
 │   ├── VoCC/
@@ -31,3 +32,4 @@ tree_climate_refugia/
 ├── renv.lock                   # Frozen dependency versions
 ├── LICENSE
 └── README.md
+```
