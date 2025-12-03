@@ -11,7 +11,7 @@ The scripts in this repository perform the extraction and spatial mapping of can
 global epipelagic climate velocity (VoCC) and relative climate exposure (RCE) derived from CMIP6 ensemble models. 
 These analyses support the conceptual and empirical framework developed in the manuscript.
 
-📂 Repository Structure
+# 📂 Repository Structure
 
 tree_climate_refugia/
 ├── data-raw/                   # Raw raster inputs (VoCC and RCE)
