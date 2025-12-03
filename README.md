@@ -12,21 +12,22 @@ global epipelagic climate velocity (VoCC) and relative climate exposure (RCE) de
 These analyses support the conceptual and empirical framework developed in the manuscript.
 
 📂 Repository Structure
+
 tree_climate_refugia/
-├── data-raw/ # Raw raster inputs (VoCC and RCE)
-│ ├── VoCC/
-│ ├── RCE/
+├── data-raw/                   # Raw raster inputs (VoCC and RCE)
+│   ├── VoCC/
+│   ├── RCE/
 ├── outputs/
-│ ├── figures/
-│ │ ├── exploratory/ # Working drafts
-│ │ ├── final/ # Paper-ready figures
+│   ├── figures/
+│   │   ├── exploratory/        # Working drafts
+│   │   ├── final/              # Paper-ready figures
 ├── R/
-│ ├── load_packages.R # Package loader with renv support
-│ ├── utils_helpers.R # Basemap, projections and helper functions
-│ ├── make_refugia_VoCCRCE_plot.R # Main map generation function
+│   ├── load_packages.R         # Package loader with renv support
+│   ├── utils_helpers.R         # Basemap, projections and helper functions
+│   ├── make_refugia_VoCCRCE_plot.R # Main map generation function
 ├── scripts/
-│ ├── 01_plot_combined_low25.R # Reproducible workflow script
-├── renv/ # Local isolated R package environment
-├── renv.lock # Frozen dependency versions
+│   ├── 01_plot_combined_low25.R    # Reproducible workflow script
+├── renv/                       # Local isolated R package environment
+├── renv.lock                   # Frozen dependency versions
 ├── LICENSE
 └── README.md
