@@ -29,11 +29,22 @@ p_deg  <- plot_low25_map(both_low, proj = "latlon")
 p_moll <- plot_low25_map(both_low, proj = "moll")
 
 
+params <- list(
+  out_pdf   = "outputs/figures/exploratory/vocc_rce_low25_refugia_moll.pdf",
+  # out_png   = "outputs/figures/exploratory/vocc_rce_low25_refugia_moll.png",
+  dpi       = 600,
+  width_in  = 20,
+  height_in = 10
+)
+
 
 ggsave(
-  filename = params$out_png,
-  plot     = p_both_low,
+  filename = params$out_pdf,
+  plot     = p_moll,
   width    = params$width_in,
   height   = params$height_in,
   dpi      = params$dpi
 )
+
+
+
