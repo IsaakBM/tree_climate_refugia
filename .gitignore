@@ -47,3 +47,26 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Mac DS files
+**/.DS_Store
+# Mac netcdf files
+**/*.nc
+# data-raw i do not want for now
+outputs/figures/exploratory/
+
+# =========================================
+# renv-specific ignores
+# =========================================
+
+# Cache folder — big compiled binaries
+renv/cache/
+
+# Staging area used during installs (temporary)
+renv/staging/
+
+# Internal renv state (temporary)
+renv/.renv/
+
+# Packrat compatibility files (old dependency system, unused here)
+packrat/
