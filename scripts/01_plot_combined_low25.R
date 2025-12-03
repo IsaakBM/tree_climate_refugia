@@ -16,8 +16,8 @@ rs_vocc_low <- terra::mask(rs_vocc, lowest25_vocc, maskvalues = 0)
 rs_rce_low  <- mask(rs_rce,  lowest25_rce,  maskvalues = 0)
 
 
-both_low <- lowest25_vocc & lowest25_rce
-both_low <- lowest25_vocc | lowest25_rce
+both_low <- lowest25_vocc & lowest25_rce # intersection
+both_low <- lowest25_vocc | lowest25_rce # addition
 
 plot(both_low)
 plot(lowest25_vocc)
