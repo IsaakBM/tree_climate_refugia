@@ -4,7 +4,7 @@ moll <- "+proj=moll +lon_0=0 +datum=WGS84 +units=m +no_defs"
 # ---------------------------------------------------------
 # Helper: ellipse from land bbox in Mollweide
 # ---------------------------------------------------------
-make_moll_earth_border_from_land <- function(land_sf,
+moll_earth_border <- function(land_sf,
                                              scale_x = 1.02,
                                              scale_y = 1.035,  # <- slightly taller
                                              n = 720) {
@@ -85,7 +85,7 @@ plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue
     rs_moll <- terra::project(rs, moll, method = "near")
     
     # ellipse based on land bbox
-    earth_border <- make_moll_earth_border_from_land(
+    earth_border <- moll_earth_border(
       land,
       scale_x = 1.02,
       scale_y = 1.035
