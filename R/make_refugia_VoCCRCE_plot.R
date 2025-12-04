@@ -3,14 +3,45 @@ library(sf)
 library(ggplot2)
 library(dplyr)
 
-# rs   : SpatRaster (logical, TRUE = area of interest)
-# proj : "latlon" or "moll"
-# fill_col : color for TRUE cells
+# Mollweide CRS
+moll <- "+proj=moll +lon_0=0 +datum=WGS84 +units=m +no_defs"
 
+# ---------------------------------------------------------
+# Helper: ellipse from land bbox in Mollweide
+# ---------------------------------------------------------
+make_moll_earth_border_from_land <- function(land_sf,
+                                             scale_x = 1.02,
+                                             scale_y = 1.08,
+                                             n = 720) {
+  bb <- st_bbox(land_sf)
+  
+  cx <- (bb["xmin"] + bb["xmax"]) / 2
+  cy <- (bb["ymin"] + bb["ymax"]) / 2
+  
+  rx <- (bb["xmax"] - bb["xmin"]) / 2 * scale_x
+  ry <- (bb["ymax"] - bb["ymin"]) / 2 * scale_y
+  
+  t <- seq(0, 2 * pi, length.out = n)
+  
+  coords <- cbind(
+    x = cx + rx * cos(t),
+    y = cy + ry * sin(t)
+  )
+  
+  # close polygon
+  coords <- rbind(coords, coords[1, ])
+  
+  st_sfc(st_polygon(list(coords)), crs = st_crs(land_sf))
+}
+
+# ---------------------------------------------------------
+# Main plotting function
+# ---------------------------------------------------------
 plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue2") {
   proj <- match.arg(proj)
   
   if (proj == "latlon") {
+    
     land <- get_world_latlon()
     
     df <- as.data.frame(rs, xy = TRUE, na.rm = FALSE)
@@ -51,9 +82,11 @@ plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue
     
   } else if (proj == "moll") {
     
+    # land mask in Mollweide, same as your original version
     land <- get_world_latlon() |>
       st_transform(crs = moll)
     
+    # raster projected to Mollweide
     rs_moll <- terra::project(rs, moll, method = "near")
     
     df <- as.data.frame(rs_moll, xy = TRUE, na.rm = FALSE)
@@ -62,6 +95,11 @@ plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue
     df <- df |>
       mutate(val = ifelse(val, "Low25", NA)) |>
       filter(!is.na(val))
+    
+    # ellipse based on land bbox (so it fully clears Antarctica)
+    earth_border <- make_moll_earth_border_from_land(land,
+                                                     scale_x = 1.02,
+                                                     scale_y = 1.08)
     
     p <- ggplot() +
       geom_raster(
@@ -73,6 +111,12 @@ plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue
         fill  = "grey20",
         color = "grey30",
         linewidth = 0.2
+      ) +
+      geom_sf(
+        data  = earth_border,
+        fill  = NA,
+        color = "black",
+        linewidth = 0.6
       ) +
       coord_sf(crs = moll, expand = FALSE) +
       scale_fill_manual(
@@ -86,8 +130,9 @@ plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue
         panel.grid       = element_blank(),
         axis.text        = element_blank(),
         axis.ticks       = element_blank(),
+        axis.title       = element_blank(),
         legend.position  = "none",
-        panel.border     = element_rect(color = "black", fill = NA, linewidth = 0.6)
+        panel.border     = element_blank()
       )
   }
   
