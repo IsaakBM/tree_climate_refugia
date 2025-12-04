@@ -1,8 +1,3 @@
-library(terra)
-library(sf)
-library(ggplot2)
-library(dplyr)
-
 # Mollweide CRS
 moll <- "+proj=moll +lon_0=0 +datum=WGS84 +units=m +no_defs"
 
@@ -11,7 +6,7 @@ moll <- "+proj=moll +lon_0=0 +datum=WGS84 +units=m +no_defs"
 # ---------------------------------------------------------
 make_moll_earth_border_from_land <- function(land_sf,
                                              scale_x = 1.02,
-                                             scale_y = 1.08,
+                                             scale_y = 1.035,  # <- slightly taller
                                              n = 720) {
   bb <- st_bbox(land_sf)
   
@@ -28,8 +23,7 @@ make_moll_earth_border_from_land <- function(land_sf,
     y = cy + ry * sin(t)
   )
   
-  # close polygon
-  coords <- rbind(coords, coords[1, ])
+  coords <- rbind(coords, coords[1, ])  # close ring
   
   st_sfc(st_polygon(list(coords)), crs = st_crs(land_sf))
 }
@@ -46,6 +40,7 @@ plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue
     
     df <- as.data.frame(rs, xy = TRUE, na.rm = FALSE)
     colnames(df) <- c("lon", "lat", "val")
+    
     df <- df |>
       mutate(val = ifelse(val, "Low25", NA)) |>
       filter(!is.na(val))
@@ -82,46 +77,56 @@ plot_low25_map <- function(rs, proj = c("latlon", "moll"), fill_col = "steelblue
     
   } else if (proj == "moll") {
     
-    # land mask in Mollweide, same as your original version
+    # land mask in Mollweide
     land <- get_world_latlon() |>
       st_transform(crs = moll)
     
     # raster projected to Mollweide
     rs_moll <- terra::project(rs, moll, method = "near")
     
-    df <- as.data.frame(rs_moll, xy = TRUE, na.rm = FALSE)
+    # ellipse based on land bbox
+    earth_border <- make_moll_earth_border_from_land(
+      land,
+      scale_x = 1.02,
+      scale_y = 1.035
+    )
+    
+    # clip raster to ellipse so no pixels go outside
+    earth_border_vect <- terra::vect(earth_border)
+    rs_moll_clip      <- terra::mask(rs_moll, earth_border_vect)
+    
+    df <- as.data.frame(rs_moll_clip, xy = TRUE, na.rm = FALSE)
     colnames(df) <- c("x", "y", "val")
     
     df <- df |>
       mutate(val = ifelse(val, "Low25", NA)) |>
       filter(!is.na(val))
     
-    # ellipse based on land bbox (so it fully clears Antarctica)
-    earth_border <- make_moll_earth_border_from_land(land,
-                                                     scale_x = 1.02,
-                                                     scale_y = 1.08)
-    
     p <- ggplot() +
+      # 1) Raster (already clipped)
       geom_raster(
         data = df,
         aes(x = x, y = y, fill = val)
       ) +
+      # 2) Land
       geom_sf(
         data  = land,
         fill  = "grey20",
         color = "grey30",
         linewidth = 0.2
       ) +
+      # 3) Coord system
+      coord_sf(crs = moll, expand = FALSE) +
+      scale_fill_manual(
+        values = c("Low25" = fill_col),
+        na.value = NA
+      ) +
+      # 4) Ellipse on top
       geom_sf(
         data  = earth_border,
         fill  = NA,
         color = "black",
         linewidth = 0.6
-      ) +
-      coord_sf(crs = moll, expand = FALSE) +
-      scale_fill_manual(
-        values = c("Low25" = fill_col),
-        na.value = NA
       ) +
       theme_minimal(base_size = 13) +
       theme(
