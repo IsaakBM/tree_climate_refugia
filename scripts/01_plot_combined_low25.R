@@ -3,8 +3,6 @@ source("R/load_packages.R")       # loads required R libraries via renv and pack
 source("R/utils_helpers.R")       # utility functions for projection and basemap handling
 source("R/make_refugia_VoCCRCE_plot.R")  # custom plotting function for map visualization
 
-library(terra)
-
 # Load VoCC and RCE rasters for SSP245, Epipelagic layer (0–200 m)
 rs_vocc <- rast("data-raw/VoCC/ssp245/02_EpipelagicLayer/voccMag_02-ep_AEMean_ssp245_2050-2100.tif")
 rs_rce  <- rast("data-raw/RCE/ssp245/02_EpipelagicLayer/02-ep_RCE_AEMean_ssp245_2015-2020.tif")
@@ -34,7 +32,7 @@ p_moll <- plot_low25_map(both_low, proj = "moll")     # Mollweide projection (gl
 
 # Output settings
 params <- list(
-  out_pdf   = "outputs/figures/exploratory/vocc_rce_low25_refugia_moll.pdf",  # output filename
+  out_pdf   = "outputs/figures/exploratory/vocc_rce_low25_refugia_moll_v02.pdf",  # output filename
   # out_png   = "outputs/figures/exploratory/vocc_rce_low25_refugia_moll.png", # optional PNG
   dpi       = 600,
   width_in  = 20,
