@@ -53,7 +53,7 @@ rsconnect/
 # Mac netcdf files
 **/*.nc
 # data-raw i do not want for now
-outputs/figures/exploratory/
+#outputs/figures/exploratory/
 
 # =========================================
 # renv-specific ignores
