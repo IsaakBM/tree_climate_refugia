@@ -4,6 +4,7 @@ library(dplyr)
 library(readr)
 library(stringr)
 library(ggplot2)
+library(RColorBrewer)
 
 source("R/utils_helpers.R")
 source("R/load_packages.R")
