@@ -49,6 +49,7 @@ test <- sf::st_wrap_dateline(
 # test <- st_make_valid(test)
 # length(unique(test$province_key))
 # plot(st_geometry(test))
+saveRDS(test,"outputs/boundaries/meow_v01.RDS")
 
 df <- read_csv("data-raw/reference_data/Climref_dataset_final.csv")
 length(unique(df$Province))
@@ -58,8 +59,8 @@ land <- get_world_latlon()  # land polygons in lon/lat (WGS84)
 p1 <- ggplot() + 
   geom_sf(
     data = test,
-    fill = "red",
-    color = "red",
+    aes(fill = REALM),
+    color = "black",
     linewidth = 0.2,
     inherit.aes = FALSE
   ) + 
