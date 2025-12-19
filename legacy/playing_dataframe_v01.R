@@ -71,3 +71,55 @@ prov_sf2 <- stDF %>%   # your sf with ECOREGION, REALM, PROVINCE, geometry
   left_join(asdf, by = "province_key") %>%
   mutate(n_studies = tidyr::replace_na(n_studies, 0))
 
+land <- get_world_latlon()  # land polygons in lon/lat (WGS84)
+p1 <- ggplot() + 
+  geom_sf(
+    data = prov_sf2,
+    aes(fill = PROVINCE),
+    color = "black",
+    linewidth = 0.2,
+    inherit.aes = FALSE
+  ) + 
+  geom_sf(
+    data = land,
+    fill = "grey20",
+    color = "grey30",
+    linewidth = 0.2,
+    inherit.aes = FALSE
+  )
+ggsave(
+  filename = "outputs/figures/exploratory/meow_ecoreg_v02.pdf",
+  plot = p1, dpi = 400, width = 20, height = 10
+)
+
+
+
+
+prov_sf2_lab <- prov_sf2 %>%
+  mutate(label_geom = st_point_on_surface(geometry)) %>%
+  st_set_geometry("label_geom")
+p1 <- ggplot() + 
+  geom_sf(
+    data = prov_sf2,
+    aes(fill = REALM),
+    color = "black",
+    linewidth = 0.2,
+    inherit.aes = FALSE
+  ) + 
+  geom_sf(
+    data = land,
+    fill = "grey20",
+    color = "grey30",
+    linewidth = 0.2,
+    inherit.aes = FALSE
+  ) +
+  geom_sf_text(
+    data = prov_sf2_lab,
+    aes(label = n_studies),
+    size = 2.5,
+    color = "black"
+  )
+ggsave(
+  filename = "outputs/figures/exploratory/meow_ecoreg_v02.pdf",
+  plot = p1, dpi = 400, width = 20, height = 10
+)
