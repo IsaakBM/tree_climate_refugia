@@ -318,7 +318,7 @@ theme_map_with_guides <- function() {
         
         legend.position = "bottom",
         legend.title = element_text(size = 10),
-        legend.text  = element_text(size = 10),
+        legend.text  = element_text(size = 12),
         
         legend.box = "horizontal",
         legend.direction = "horizontal",
@@ -366,7 +366,7 @@ p1 <- ggplot() +
   geom_sf_text(
     data = lab_pts,
     aes(label = n_studies),
-    size = 3,
+    size = 5,
     color = "black"
   ) +
   # Earth outline
