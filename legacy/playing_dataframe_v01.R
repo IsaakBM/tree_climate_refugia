@@ -305,6 +305,41 @@ ggsave(
 
 # testing dissolve by province --------------------------------------------
 
+theme_map_with_guides <- function() {
+  list(
+    theme_void() +
+      theme(
+        panel.grid.major = element_line(color = "grey80", linewidth = 0.3),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        
+        axis.text  = element_text(color = "grey30", size = 9),
+        axis.title = element_blank(),
+        
+        legend.position = "bottom",
+        legend.title = element_text(size = 10),
+        legend.text  = element_text(size = 10),
+        
+        legend.box = "horizontal",
+        legend.direction = "horizontal",
+        
+        legend.spacing.x = unit(8, "pt"),
+        legend.spacing.y = unit(6, "pt"),
+        
+        plot.margin = margin(t = 10, r = 10, b = 120, l = 10)
+      ),
+    
+    guides(
+      fill = guide_legend(
+        title.position = "top",
+        ncol = 6,          # ⬅️ fewer columns = taller legend
+        byrow = TRUE,
+        keywidth = unit(12, "pt"),
+        keyheight = unit(10, "pt")
+      )
+    )
+  )
+}
 
 prov_lab <- prov_sf2 %>%
   dplyr::group_by(PROVINCE) %>%
@@ -333,11 +368,34 @@ p1 <- ggplot() +
     aes(label = n_studies),
     size = 3,
     color = "black"
-  )
+  ) +
+  # Earth outline
+  geom_sf(
+    data = earth_outline,
+    color = "grey50",
+    linewidth = 1.0,
+    inherit.aes = FALSE
+  ) +
+  # Robinson projection; default_crs ensures lon/lat tiles are projected correctly
+  coord_sf(
+    crs = robin,
+    default_crs = st_crs(4326),
+    expand = FALSE
+  ) +
+  theme_map_with_guides()
+
 ggsave(
   filename = "outputs/figures/exploratory/meow_ecoreg_v02.pdf",
-  plot = p1, dpi = 400, width = 20, height = 10
+  plot = p1, dpi = 400, width = 21, height = 15
 )
+
+
+
+
+
+
+
+
 
 
 prov_sf2_lab <- prov_sf2 %>%
