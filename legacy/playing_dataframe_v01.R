@@ -405,23 +405,23 @@ theme_map_with_guides_v02 <- function() {
         axis.title = element_blank(),
         
         legend.position = "right",
-        legend.title = element_text(size = 10),
-        legend.text  = element_text(size = 12),
+        
+        legend.title = element_text(size = 16, face = "bold"),
+        legend.text  = element_text(size = 14),
         
         legend.box = "vertical",
         legend.direction = "vertical",
         
-        legend.spacing.x = unit(8, "pt"),
-        legend.spacing.y = unit(6, "pt"),
+        legend.spacing.y = unit(8, "pt"),
         
-        plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+        plot.margin = margin(t = 10, r = 20, b = 10, l = 10)
       ),
     
     guides(
       fill = guide_colorbar(
         title.position = "top",
-        barheight = unit(90, "pt"),  # taller vertical bar
-        barwidth  = unit(12, "pt"),
+        barheight = unit(200, "pt"),  # taller bar
+        barwidth  = unit(20, "pt"),   # thicker bar
         ticks = TRUE
       )
     )
@@ -441,11 +441,12 @@ p2 <- ggplot() +
   ) +
   scale_fill_gradientn(
     colours = c("grey", RColorBrewer::brewer.pal(9, "YlOrRd")),
-    limits = c(0, 14),
-    breaks = seq(0, 14, by = 2),
-    oob = scales::squish,
-    na.value = "grey90"
-  )+
+    limits  = c(0, 14),
+    breaks  = seq(0, 14, by = 2),
+    oob     = scales::squish,
+    na.value = "grey90",
+    name = "Number\nof studies"
+  ) +
   # Land
   geom_sf(
     data = land,
@@ -478,7 +479,7 @@ p2 <- ggplot() +
 
 ggsave(
   filename = "outputs/figures/exploratory/meow_ecoreg_v03.pdf",
-  plot = p2, dpi = 400, width = 21, height = 15
+  plot = p2, dpi = 400, width = 25, height = 15
 )
 
 
