@@ -272,7 +272,8 @@ sort(unique(stDF$ECOREGION))
 
 asdf <- dff_prov %>%
   mutate(province_key = str_squish(str_to_lower(province))) %>%
-  count(province_key, name = "n_studies")
+  group_by(province_key) %>%
+  summarise(n_studies = sum(n_studies), .groups = "drop")
 
 prov_sf2 <- stDF %>%   # your sf with ECOREGION, REALM, PROVINCE, geometry
   mutate(province_key = str_squish(str_to_lower(PROVINCE))) %>%
@@ -349,6 +350,7 @@ prov_lab <- prov_sf2 %>%
   )
 lab_pts <- prov_lab %>%
   mutate(geometry = st_point_on_surface(geometry))
+earth_outline <- earth_outline_robinson()
 
 p1 <- ggplot() +
   geom_sf(
@@ -388,6 +390,122 @@ ggsave(
   filename = "outputs/figures/exploratory/meow_ecoreg_v02.pdf",
   plot = p1, dpi = 400, width = 21, height = 15
 )
+
+
+
+theme_map_with_guides_v02 <- function() {
+  list(
+    theme_void() +
+      theme(
+        panel.grid.major = element_line(color = "grey80", linewidth = 0.3),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        
+        axis.text  = element_text(color = "grey30", size = 9),
+        axis.title = element_blank(),
+        
+        legend.position = "right",
+        legend.title = element_text(size = 10),
+        legend.text  = element_text(size = 12),
+        
+        legend.box = "vertical",
+        legend.direction = "vertical",
+        
+        legend.spacing.x = unit(8, "pt"),
+        legend.spacing.y = unit(6, "pt"),
+        
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+      ),
+    
+    guides(
+      fill = guide_colorbar(
+        title.position = "top",
+        barheight = unit(90, "pt"),  # taller vertical bar
+        barwidth  = unit(12, "pt"),
+        ticks = TRUE
+      )
+    )
+  )
+}
+
+
+
+
+p2 <- ggplot() +
+  # Provinces, continuous fill
+  geom_sf(
+    data = prov_lab,
+    aes(fill = n_studies),
+    color = "black",
+    linewidth = 0.2
+  ) +
+  scale_fill_gradientn(
+    colours = c("grey", RColorBrewer::brewer.pal(9, "YlOrRd")),
+    limits = c(0, 14),
+    breaks = seq(0, 14, by = 2),
+    oob = scales::squish,
+    na.value = "grey90"
+  )+
+  # Land
+  geom_sf(
+    data = land,
+    fill = "grey20",
+    color = "grey30",
+    linewidth = 0.2,
+    inherit.aes = FALSE
+  ) +
+  # Labels
+  # geom_sf_text(
+  #   data = lab_pts,
+  #   aes(label = n_studies),
+  #   size = 5,
+  #   color = "black",
+  #   inherit.aes = FALSE
+  # ) +
+  # Earth outline
+  geom_sf(
+    data = earth_outline,
+    color = "grey50",
+    linewidth = 1.0,
+    inherit.aes = FALSE
+  ) +
+  coord_sf(
+    crs = robin,
+    default_crs = st_crs(4326),
+    expand = FALSE
+  ) +
+  theme_map_with_guides_v02()
+
+ggsave(
+  filename = "outputs/figures/exploratory/meow_ecoreg_v03.pdf",
+  plot = p2, dpi = 400, width = 21, height = 15
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
