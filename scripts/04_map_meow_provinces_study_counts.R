@@ -299,7 +299,6 @@ theme_map_with_guides_v03 <- function() {
   list(
     theme_void() +
       theme(
-        # Keep the panel white. Ocean shading is handled by a filled Earth outline layer.
         panel.background = element_rect(fill = "white", color = NA),
         plot.background  = element_rect(fill = "white", color = NA),
         
@@ -320,7 +319,12 @@ theme_map_with_guides_v03 <- function() {
         
         plot.margin = margin(t = 10, r = 20, b = 10, l = 10),
         
-        plot.caption = element_text(size = 10, color = "grey30", hjust = 1)
+        plot.caption = element_text(
+          size = 14,
+          color = "grey20",
+          hjust = 1,
+          margin = margin(t = 10)
+        )
       ),
     guides(
       fill = guide_colorbar(
@@ -358,7 +362,7 @@ p3 <- ggplot() +
   # Pale ocean background constrained to the Earth shape (high seas cue)
   geom_sf(
     data = earth_poly, 
-    fill = "grey95", 
+    fill = "#bcbddc", 
     color = "black") +
   # Provinces (continuous fill = number of studies)
   geom_sf(
@@ -368,11 +372,11 @@ p3 <- ggplot() +
     linewidth = 0.2
   ) +
   scale_fill_gradientn(
-    colours  = c("grey", RColorBrewer::brewer.pal(9, "YlOrRd")),
+    colours  = c("white", RColorBrewer::brewer.pal(9, "YlOrRd")),
     limits   = c(0, 14),
     breaks   = seq(0, 14, by = 2),
     oob      = scales::squish,
-    na.value = "grey90",
+    na.value = "white",
     name     = "Number\nof studies"
   ) +
   # Land
@@ -389,7 +393,7 @@ p3 <- ggplot() +
     expand = FALSE
   ) +
   labs(
-    caption = "Pale ocean areas indicate high seas coverage, representing global studies not assigned to provinces (n = 5)."
+    caption = "Purple ocean areas indicate high seas coverage, representing global studies not assigned to provinces (n = 5)"
   ) +
   theme_map_with_guides_v03()
 
