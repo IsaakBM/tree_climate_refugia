@@ -255,8 +255,8 @@ p2 <- ggplot2::ggplot() +
   ) +
   ggplot2::scale_fill_gradientn(
     colours = c("grey", RColorBrewer::brewer.pal(9, "YlOrRd")),
-    limits  = c(0, 14),
-    breaks  = seq(0, 14, by = 2),
+    limits  = c(0, 15),
+    breaks  = seq(0, 15, by = 3),
     oob     = scales::squish,
     na.value = "grey90",
     name = "Number\nof studies"
