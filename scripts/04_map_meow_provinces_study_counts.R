@@ -285,3 +285,115 @@ ggplot2::ggsave(
   filename = "outputs/figures/exploratory/meow_ecoreg_v03.pdf",
   plot = p2, dpi = 400, width = 25, height = 15
 )
+
+# ------------------------------------------------------------------------------
+# 11) Handling studies without provincial attribution (global scale)
+# ------------------------------------------------------------------------------
+# Theme for option 3 plot
+# Same visual language as option 2, but we avoid panel.background shading
+# because that paints the whole plotting panel. Instead, we fill the ocean
+# ONLY inside the Earth outline (see p3 below), which is the clean cue for
+# "global studies in high seas" (n = 5).
+
+theme_map_with_guides_v03 <- function() {
+  list(
+    theme_void() +
+      theme(
+        # Keep the panel white. Ocean shading is handled by a filled Earth outline layer.
+        panel.background = element_rect(fill = "white", color = NA),
+        plot.background  = element_rect(fill = "white", color = NA),
+        
+        panel.grid.major = element_line(color = "grey80", linewidth = 0.3),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        
+        axis.text  = element_text(color = "grey30", size = 9),
+        axis.title = element_blank(),
+        
+        legend.position = "right",
+        legend.title = element_text(size = 16, face = "bold"),
+        legend.text  = element_text(size = 14),
+        
+        legend.box = "vertical",
+        legend.direction = "vertical",
+        legend.spacing.y = unit(8, "pt"),
+        
+        plot.margin = margin(t = 10, r = 20, b = 10, l = 10),
+        
+        plot.caption = element_text(size = 10, color = "grey30", hjust = 1)
+      ),
+    guides(
+      fill = guide_colorbar(
+        title.position = "top",
+        barheight = unit(200, "pt"),
+        barwidth  = unit(20, "pt"),
+        ticks = TRUE
+      )
+    )
+  )
+}
+
+# Option 3 plot
+# Same as option 2, but with a pale ocean fill constrained to the Earth outline
+# to represent global (non-province) studies (n = 5).
+
+
+# --- turn the earth_outline LINESTRING into a fillable POLYGON ---
+coords <- sf::st_coordinates(earth_outline)
+# keep only XY
+xy <- coords[, c("X","Y"), drop = FALSE]
+# force closure (polygon needs first point == last point)
+if (!all(xy[1, ] == xy[nrow(xy), ])) {
+  xy <- rbind(xy, xy[1, ])
+}
+earth_poly <- sf::st_sf(
+  geometry = sf::st_sfc(sf::st_polygon(list(xy)), crs = sf::st_crs(earth_outline))
+)
+# quick sanity checks
+sf::st_geometry_type(earth_poly)
+plot(sf::st_geometry(earth_poly), col = "grey95", border = "grey20")
+
+
+p3 <- ggplot() +
+  # Pale ocean background constrained to the Earth shape (high seas cue)
+  geom_sf(
+    data = earth_poly, 
+    fill = "grey95", 
+    color = "black") +
+  # Provinces (continuous fill = number of studies)
+  geom_sf(
+    data = prov_lab,
+    aes(fill = n_studies),
+    color = "black",
+    linewidth = 0.2
+  ) +
+  scale_fill_gradientn(
+    colours  = c("grey", RColorBrewer::brewer.pal(9, "YlOrRd")),
+    limits   = c(0, 14),
+    breaks   = seq(0, 14, by = 2),
+    oob      = scales::squish,
+    na.value = "grey90",
+    name     = "Number\nof studies"
+  ) +
+  # Land
+  geom_sf(
+    data = land,
+    fill = "grey20",
+    color = "grey30",
+    linewidth = 0.2,
+    inherit.aes = FALSE
+  ) +
+  coord_sf(
+    crs = robin,
+    default_crs = st_crs(4326),
+    expand = FALSE
+  ) +
+  labs(
+    caption = "Pale ocean areas indicate high seas coverage, representing global studies not assigned to provinces (n = 5)."
+  ) +
+  theme_map_with_guides_v03()
+
+ggsave(
+  filename = "outputs/figures/exploratory/meow_ecoreg_v04_global_studies.pdf",
+  plot = p3, dpi = 400, width = 25, height = 15
+)
