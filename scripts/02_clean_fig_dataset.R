@@ -6,30 +6,36 @@
 
 library(tidyverse)
 
-dat <- read.csv("data-raw/Provisional_climref_dataset_for_figures.csv")
+#dat <- read.csv("data-raw/Provisional_climref_dataset_for_figures.csv")
+dat <- read.csv("data-raw/reference_data/Climref_dataset_final_20260109.csv")
+
 # Update to final dataset pending Mikaela
 
 
 # Cleaning ----------------------------------------------------------------
 
+head(dat)
 # Remove empty cols
-dat2 <- dat[, -grep("X.", colnames(dat))]
-dat2$X <- NULL
+#dat2 <- dat[, -grep("X.", colnames(dat))]
+#dat2$X <- NULL
 
 # Remove uncessary cols
-dat2$Inclusion <- NULL
-dat2$Title <- NULL
+dat$Inclusion <- NULL
+dat$Title <- NULL
 
+head(dat)
+dat$Authors
 # Remove empty rows
-dat3 <- dat2[1:grep("Man,", dat2$Authors),] #Man et al is final paper in list
+dat2 <- dat[1:grep("Nur", dat$Authors),] #Nur et al is final paper in list
 
 # Change author col to first name only
-dat3$ID <- str_extract(dat3$Authors, "^[^[:space:];,\\.]+")
-dat3$Authors <- NULL
+dat2$ID <- str_extract(dat2$Authors, "^[^[:space:];,\\.]+")
+dat2$Authors <- NULL
 
 # Change depth vals to codes 
+head(dat2)
 
-dat4 <- dat3 %>%
+dat4 <- dat2 %>%
   mutate(
     Depth_code = Depth %>%
       str_replace_all("\n", " ") %>%
@@ -43,6 +49,7 @@ dat4 <- dat3 %>%
       str_replace_all(", All water column", "") 
   )
 dat4$Depth <- NULL
+head(dat4)
 
 # Change variables to factors
 
@@ -56,6 +63,7 @@ dat4$Final_refugia_type <- as.factor(dat4$Final_refugia_type)
 # Code up final_refugia_type
 levels(dat4$Final_refugia_type) <- c("COMBO", "HAB-SUIT", "LOW-EXP", "RESIL")
 
+head(dat4)
 
 # Remove realm, location and province -------------------------------------
 
@@ -65,7 +73,7 @@ dat4$Realm <- NULL
 dat4$Province <- NULL
 dat4$Location_Country <- NULL
 # Will do these in another script.
-
+head(dat4)
 
 # Separate species and depth codes into table -----------------------------
 
@@ -99,6 +107,7 @@ listy <- list()
 listy[[1]] <- dat4
 listy[[2]] <- species_counts
 listy[[3]] <- depth_counts
+listy
 write_rds(listy, "out/cleaned_climref_summarystats_NOLOCATIONINFO.rds")
 
 
@@ -112,8 +121,18 @@ barplot(dat4$Stressor %>% table)
 barplot(dat4$Final_refugia_type %>% table)
 
 df <- dat4$Species %>% table %>% as.tibble()
+species_counts2 <- species_counts %>%  as.data.frame()
 
-ggplot(df, aes(x = ., y = n)) +
+species_counts2_long <- species_counts2 |>
+  pivot_longer(
+    cols = everything(),
+    names_to = "species_group",
+    values_to = "count"
+  )
+
+species_counts2_long
+
+ggplot(species_counts2_long, aes(x = species_group, y = count)) +
   geom_col(width = 1) +
   coord_polar(start = 0) +
   theme_minimal() +
