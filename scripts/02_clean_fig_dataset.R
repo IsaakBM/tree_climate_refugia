@@ -7,7 +7,8 @@
 library(tidyverse)
 
 #dat <- read.csv("data-raw/Provisional_climref_dataset_for_figures.csv")
-dat <- read.csv("data-raw/reference_data/Climref_dataset_final_20260109.csv")
+#dat <- read.csv("data-raw/reference_data/Climref_dataset_final_20260109.csv")
+dat <- read.csv("data-raw/reference_data/Climref_dataset_final_20260115.csv")
 
 # Update to final dataset pending Mikaela
 
@@ -26,7 +27,7 @@ dat$Title <- NULL
 head(dat)
 dat$Authors
 # Remove empty rows
-dat2 <- dat[1:grep("Nur", dat$Authors),] #Nur et al is final paper in list
+dat2 <- dat[1:grep("Nur ", dat$Authors),] #Nur et al is final paper in list
 
 # Change author col to first name only
 dat2$ID <- str_extract(dat2$Authors, "^[^[:space:];,\\.]+")
