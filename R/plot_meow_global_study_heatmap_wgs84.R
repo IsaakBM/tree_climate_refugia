@@ -181,7 +181,7 @@ plot_meow_global_study_heatmap_wgs84 <- function(
     ) +
     ggplot2::coord_sf(crs = sf::st_crs(4326), expand = FALSE) +
     ggplot2::labs(
-      caption = "Grey ocean areas indicate high seas coverage, representing global studies not assigned to provinces (n = 20)"
+      caption = "Grey ocean areas indicates studies in the high seas (n = 20)"
     ) +
     theme_fn()
   
