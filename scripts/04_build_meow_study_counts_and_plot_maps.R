@@ -4,7 +4,7 @@ source("R/plot_meow_global_study_heatmap_robinson.R")
 # 1) Read reference dataset and create a stable paper_id
 # ------------------------------------------------------------------------------
 # df <- read_csv("data-raw/reference_data/Climref_dataset_final_20260109.csv")
-df <- read_csv("data-raw/reference_data/Climref_dataset_final_20260115.csv")
+df <- read_csv("data-raw/reference_data/Climref_dataset_final_20260115_v2.csv")
 
 dff <- df %>%
   dplyr::mutate(paper_id = dplyr::row_number())
@@ -96,8 +96,10 @@ prov_lab <- prov_sf2 %>%
 
 plot_meow_global_study_heatmap_wgs84(prov_lab, palette = "Blues")
 plot_meow_global_study_heatmap_wgs84(prov_lab, palette = "BuGn")
+plot_meow_global_study_heatmap_wgs84(prov_lab, palette = "GnBu")
 plot_meow_global_study_heatmap_wgs84(prov_lab, palette = "YlOrRd")
 
 plot_meow_global_study_heatmap_robinson(prov_lab, palette = "Blues")
 plot_meow_global_study_heatmap_robinson(prov_lab, palette = "BuGn")
+plot_meow_global_study_heatmap_robinson(prov_lab, palette = "GnBu")
 plot_meow_global_study_heatmap_robinson(prov_lab, palette = "YlOrRd")
