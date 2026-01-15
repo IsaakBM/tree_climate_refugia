@@ -3,7 +3,8 @@ source("R/plot_meow_global_study_heatmap_robinson.R")
 # ------------------------------------------------------------------------------
 # 1) Read reference dataset and create a stable paper_id
 # ------------------------------------------------------------------------------
-df <- read_csv("data-raw/reference_data/Climref_dataset_final_20260109.csv")
+# df <- read_csv("data-raw/reference_data/Climref_dataset_final_20260109.csv")
+df <- read_csv("data-raw/reference_data/Climref_dataset_final_20260115.csv")
 
 dff <- df %>%
   dplyr::mutate(paper_id = dplyr::row_number())
