@@ -41,6 +41,22 @@ dff_prov <- dff %>%
   tidyr::separate_rows(province, sep = ";|,") %>%
   dplyr::mutate(province = stringr::str_squish(province)) %>%
   dplyr::filter(!is.na(province), province != "", province != "multiple") %>%
+  
+  # ---------------------------------------------------------------------------
+# MIN FIX: recode the two remaining mismatches reported by the team
+# - MEOW combines: "marshall" + "gilbert & ellis islands" -> one province name
+# - MEOW uses space (not dash): "tristan gough"
+# ---------------------------------------------------------------------------
+dplyr::mutate(
+  province = dplyr::case_when(
+    province %in% c("marshall", "gilbert & ellis islands", "gilbert and ellis islands") ~
+      "marshall, gilbert and ellis islands",
+    province %in% c("tristan–gough", "tristan-gough") ~
+      "tristan gough",
+    TRUE ~ province
+  )
+) %>%
+  
   dplyr::arrange(paper_id) %>%
   dplyr::select(paper_id, province) %>%
   dplyr::count(province, name = "n_studies") %>%
