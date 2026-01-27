@@ -76,6 +76,10 @@ species_long <- species %>%
     values_to = "n"
   )
 
+species_long %>% 
+  mutate(percent_label = scales::percent(n / sum(n)))
+
+species_long
 ggplot(species_long, aes(x = Species, y = n)) +
   geom_col(width = 1) +
   coord_polar(start = 0) +
@@ -87,7 +91,7 @@ ggplot(species_long, aes(x = Species, y = n)) +
   ) +
   theme(
     axis.text.x = element_text(size = 10)
-  ) + 
-  ggsave("out/summarystats_species.png")
+  )# + 
+ # ggsave("out/summarystats_species.png")
 
 
