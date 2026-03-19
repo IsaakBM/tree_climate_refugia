@@ -8,17 +8,18 @@ library(tidyverse)
 
 #dat <- read.csv("data-raw/Provisional_climref_dataset_for_figures.csv")
 #dat <- read.csv("data-raw/reference_data/Climref_dataset_final_20260109.csv")
-dat <- read.csv("data-raw/reference_data/Climref_dataset_final_20260115.csv")
+#dat <- read.csv("data-raw/reference_data/Climref_dataset_final_20260115.csv")
 
-# Update to final dataset pending Mikaela
-
+dat <- read.csv("data-raw/reference_data/Dataset_Climref_review_reviewed_FINAL.csv")
+head(dat)
 
 # Cleaning ----------------------------------------------------------------
 
 head(dat)
 # Remove empty cols
-#dat2 <- dat[, -grep("X.", colnames(dat))]
-#dat2$X <- NULL
+dat2 <- dat[, -grep("X.", colnames(dat))]
+dat2$X <- NULL
+dat <- dat2
 
 # Remove uncessary cols
 dat$Inclusion <- NULL
@@ -27,11 +28,16 @@ dat$Title <- NULL
 head(dat)
 dat$Authors
 # Remove empty rows
-dat2 <- dat[1:grep("Nur ", dat$Authors),] #Nur et al is final paper in list
+#dat2 <- dat[1:grep("Torrej", dat$Authors),] #Torrej et al is final paper in list
+
+# Torrej isfinal author in list. Indice 82
+dat <- dat[1:82, ] 
 
 # Change author col to first name only
-dat2$ID <- str_extract(dat2$Authors, "^[^[:space:];,\\.]+")
-dat2$Authors <- NULL
+dat$ID <- str_extract(dat$Authors, "^[^[:space:];,\\.]+")
+dat$ID #Issues with non-English letters and encoding - leave for now
+dat$Authors <- NULL
+dat2 <- dat
 
 # Change depth vals to codes 
 head(dat2)
@@ -43,12 +49,13 @@ dat4 <- dat2 %>%
       str_replace_all("\"", "") %>%
       str_replace_all("Shallow \\(0-50m\\)", "SHAL") %>%
       str_replace_all("Epipelagic \\(0-200 m\\)", "EPI") %>%
-      str_replace_all("Mesopelagic \\(200–1,000 m\\)", "MESO") %>%
+      str_replace_all("Mesopelagic \\(200\xd01,000 m\\)", "MESO") %>%
       str_replace_all("Bathyabyssopelagic \\(>1,000 m\\)", "BATHY") %>%
       str_replace_all("Seafloor", "SEAFLOOR") %>%
       str_replace_all("All water column, ", "") %>% 
       str_replace_all(", All water column", "") 
   )
+dat4$Depth_code
 dat4$Depth <- NULL
 head(dat4)
 
@@ -90,6 +97,8 @@ species_counts <- dat4 %>%
     values_from = n,
     values_fill = 0  )
 
+
+
 # Same for depth
 depth_counts <- dat4 %>%
   separate_rows(Depth_code, sep = ",\\s*") %>%   # split comma-separated species into rows
@@ -99,7 +108,7 @@ depth_counts <- dat4 %>%
                   values_fill = 0  )
 
 species_counts
-depth_counts
+depth_counts 
 dat4
 
 # Save as list ------------------------------------------------------------
@@ -109,7 +118,7 @@ listy[[1]] <- dat4
 listy[[2]] <- species_counts
 listy[[3]] <- depth_counts
 listy
-write_rds(listy, "out/cleaned_climref_summarystats_NOLOCATIONINFO.rds")
+write_rds(listy, "outputs/box3/out/final_cleaned_climref_summarystats_NOLOCATIONINFO.rds")
 
 
 # Summary plots -----------------------------------------------------------

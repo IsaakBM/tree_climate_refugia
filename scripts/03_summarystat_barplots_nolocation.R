@@ -7,7 +7,7 @@
 
 library(tidyverse)
 
-dat <- read_rds("out/cleaned_climref_summarystats_NOLOCATIONINFO.rds")
+dat <- read_rds("outputs/box3/out/final_cleaned_climref_summarystats_NOLOCATIONINFO.rds")
 df <- dat[[1]]
 species <- dat[[2]] %>% as.tibble()
 depth <- dat[[3]] %>% as.tibble()
@@ -43,7 +43,7 @@ ggplot(bar_df, aes(x = Category, y = n)) +
     axis.text.x = element_text(angle = 45, hjust = 1),
     panel.grid.major.x = element_blank()
   ) +
-  ggsave("out/summarystats_facet.png")
+  ggsave("outputs/box3/out/final_summarystats_facet.png")
 
 
 # Depth -------------------------------------------------------------------
@@ -64,7 +64,7 @@ ggplot(depth_long, aes(x = depth, y = n)) +
     axis.text.x = element_text(angle = 45, hjust = 1),
     panel.grid.major.x = element_blank()
   ) + 
-  ggsave("out/summarystats_depth.png")
+  ggsave("outputs/box3/out/final_summarystats_depth.png")
 
 
 # Species -----------------------------------------------------------------
@@ -91,7 +91,7 @@ ggplot(species_long, aes(x = Species, y = n)) +
   ) +
   theme(
     axis.text.x = element_text(size = 10)
-  )# + 
- # ggsave("out/summarystats_species.png")
+  ) + 
+  ggsave("outputs/box3/out/final_summarystats_species.png")
 
 

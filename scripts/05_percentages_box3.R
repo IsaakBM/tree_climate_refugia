@@ -7,7 +7,7 @@
 
 library(tidyverse)
 
-dat <- read_rds("out/cleaned_climref_summarystats_NOLOCATIONINFO.rds")
+dat <- read_rds("outputs/box3/out/final_cleaned_climref_summarystats_NOLOCATIONINFO.rds")
 df <- dat[[1]]
 species <- dat[[2]] %>% as.tibble()
 depth <- dat[[3]] %>% as.tibble()
@@ -25,7 +25,7 @@ species_long <- species %>%
 
 species_long$percent_label%>% sum #check 
 
-write.csv(species_long, "outputs/box3/species.csv")
+write.csv(species_long, "outputs/box3/final_species.csv")
 
 
 # Depth -------------------------------------------------------------------
@@ -41,7 +41,7 @@ depth_long <- depth %>%
 
 depth_long
 depth_long$percent_label%>% sum #check 
-write.csv(depth_long, "outputs/box3/depth.csv")
+write.csv(depth_long, "outputs/box3/final_depth.csv")
 
 
 # All other panels ---------------------------------------------------------------------
@@ -66,31 +66,31 @@ bar_df$Variable %>% unique
 # EEZ
 eez <- bar_df %>% filter(Variable == "EEZ")  %>% 
   mutate(percent_label = n / sum(n) * 100) 
-write.csv(eez, "outputs/box3/eez.csv")
+write.csv(eez, "outputs/box3/final_eez.csv")
 
 
 # Final refugia type 
 type <- bar_df %>% filter(Variable == "Final_refugia_type")  %>% 
   mutate(percent_label = n / sum(n) * 100) 
-write.csv(type, "outputs/box3/type.csv")
+write.csv(type, "outputs/box3/final_type.csv")
 
 # Scale
 scale <- bar_df %>% filter(Variable == "Scale")  %>% 
   mutate(percent_label = n / sum(n) * 100) 
-write.csv(scale, "outputs/box3/scale.csv")
+write.csv(scale, "outputs/box3/final_scale.csv")
 
 # Stressor
 stressor <- bar_df %>% filter(Variable == "Stressor")  %>% 
   mutate(percent_label = n / sum(n) * 100) 
-write.csv(stressor, "outputs/box3/stressor.csv")
+write.csv(stressor, "outputs/box3/final_stressor.csv")
 
 # Time
 time <- bar_df %>% filter(Variable == "Time")  %>% 
   mutate(percent_label = n / sum(n) * 100) 
-write.csv(time, "outputs/box3/time.csv")
+write.csv(time, "outputs/box3/final_time.csv")
 
 # Type_data
 typedata <- bar_df %>% filter(Variable == "Type_data")  %>% 
   mutate(percent_label = n / sum(n) * 100) 
-write.csv(typedata, "outputs/box3/typedata.csv")
+write.csv(typedata, "outputs/box3/final_typedata.csv")
 
