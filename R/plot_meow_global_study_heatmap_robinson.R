@@ -168,8 +168,8 @@ plot_meow_global_study_heatmap_robinson <- function(
     ) +
     ggplot2::scale_fill_gradientn(
       colours  = c("white", RColorBrewer::brewer.pal(9, palette)),
-      limits   = c(0, 14),
-      breaks   = seq(0, 14, by = 2),
+      limits   = c(0, 20),
+      breaks   = seq(0, 20, by = 2),
       oob      = scales::squish,
       na.value = "white",
       name     = "Number\nof studies"
@@ -192,7 +192,7 @@ plot_meow_global_study_heatmap_robinson <- function(
     ) +
     
     ggplot2::labs(
-      caption = "Grey ocean areas indicates studies in the high seas (n = 20)"
+      caption = "Grey ocean areas indicates studies in the high seas (n = 25)"
     ) +
     theme_fn()
   
