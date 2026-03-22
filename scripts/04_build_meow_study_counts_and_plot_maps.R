@@ -21,7 +21,8 @@ norm_prov_key <- function(x) {
 # ------------------------------------------------------------------------------
 # 1) Read reference dataset and create a stable paper_id
 # ------------------------------------------------------------------------------
-df <- readr::read_csv("data-raw/reference_data/Climref_dataset_final_20260115_v2.csv")
+# df <- readr::read_csv("data-raw/reference_data/Climref_dataset_final_20260115_v2.csv")
+df <- readr::read_csv("data-raw/reference_data/Dataset_Climref_review_reviewed_FINAL_ibm-working.csv")
 
 dff <- df %>%
   dplyr::mutate(paper_id = dplyr::row_number())
